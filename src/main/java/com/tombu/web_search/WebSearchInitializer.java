@@ -10,7 +10,11 @@ public class WebSearchInitializer implements ApplicationListener<ApplicationEven
     public void onApplicationEvent(ApplicationEvent event) {
         System.out.println("event: " + event);
         if (event instanceof ApplicationReadyEvent) {
-            WebSearchApi.InitApi();
+            try {
+                WebSearchApi.InitApi();
+            } catch (Exception e) {
+                System.exit(-1);
+            }
             System.out.println("System ready");
         }
     }
