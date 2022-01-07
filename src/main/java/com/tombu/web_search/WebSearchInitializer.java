@@ -15,7 +15,7 @@ public class WebSearchInitializer implements ApplicationListener<ApplicationEven
             } catch (Exception e) {
                 System.exit(-1);
             }
-            System.out.println("System ready");
+            System.out.println("System ready 1");
         }
     }
 }
