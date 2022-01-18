@@ -3,6 +3,7 @@ package com.tombu.web_search;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @CrossOrigin
 @RestController()
@@ -14,20 +15,21 @@ public class WebSearchApi {
     public String indexDocument(@RequestParam(name = "index_name") String indexName,
                                 @RequestParam(name = "id") String id,
                                 @RequestParam(name = "user_id") String userId,
+                                @RequestParam(name = "created_date") String createdDate,
                                 @RequestParam(name = "title") String title,
                                 @RequestParam(name = "url") String url,
-                                @RequestParam(name = "tags", required = false) String tags,
                                 @RequestParam(name = "body") String body) throws Exception {
-        IndexService.FindIndex(indexName).indexDocument(id, userId, title, url, tags, body);
+        IndexService.FindIndex(indexName).indexDocument(id, userId, createdDate, title, url,  body);
         return "Ok";
     }
 
     @CrossOrigin
     @PostMapping("/search_index")
-    public String searchIndex(@RequestParam(name = "index_name") String indexName,
+    public List<ResultDocument> searchIndex(@RequestParam(name = "index_name") String indexName,
+                                @RequestParam(name = "user_id") String userId,
                                 @RequestParam(name = "search_phrase") String searchPhrase) throws Exception {
-        IndexService.FindIndex(indexName).search(searchPhrase);
-        return "Ok";
+        List<ResultDocument> result = IndexService.FindIndex(indexName).search(userId, searchPhrase);
+        return result;
     }
 
     public static void InitApi() throws Exception {

@@ -8,21 +8,19 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.RAMDirectory;
-import sun.jvm.hotspot.debugger.remote.amd64.RemoteAMD64Thread;
+import org.apache.lucene.store.FSDirectory;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DocumentIndex {
     private String name;
-    Directory memoryIndex;
+    Directory index;
     StandardAnalyzer analyzer;
     IndexWriterConfig indexWriterConfig;
     IndexWriter writer;
@@ -33,35 +31,44 @@ public class DocumentIndex {
     }
 
     public void init() throws Exception {
-        memoryIndex = new RAMDirectory();
+        index = FSDirectory.open(Paths.get("/Users/tombu/lucene/test_index"));
         analyzer = new StandardAnalyzer();
         indexWriterConfig = new IndexWriterConfig(analyzer);
-        writer = new IndexWriter(memoryIndex, indexWriterConfig);
+        writer = new IndexWriter(index, indexWriterConfig);
     }
 
-    public void indexDocument(String id, String userId, String title, String url, String tags, String body) throws Exception {
+    public void indexDocument(String id, String userId, String createdDate, String title, String url,  String body) throws Exception {
         Document document = new Document();
         document.add(new TextField("id", id, Field.Store.YES));
         document.add(new TextField("user_id", userId, Field.Store.YES));
+        document.add(new TextField("created_date", createdDate, Field.Store.YES ));
         document.add(new TextField("title", title, Field.Store.YES));
         document.add(new TextField("url", url, Field.Store.YES));
-        tags = (tags == null) ? "" : tags;
-        document.add(new TextField("tags", tags, Field.Store.YES));
         document.add(new TextField("body", body, Field.Store.NO));
         writer.addDocument(document);
         writer.commit();
         System.out.println("Success Indexing");
     }
 
-    public void search(String searchPhrase) throws Exception {
-        IndexReader reader = DirectoryReader.open(memoryIndex);;
+    public List<ResultDocument> search(String userId, String searchPhrase) throws Exception {
+        IndexReader reader = DirectoryReader.open(index);
         IndexSearcher searcher = new IndexSearcher(reader);
-        Query query = new QueryParser("body",analyzer).parse(searchPhrase);
-        TopDocs topDocs = searcher.search(query,200);
-        List<Document> documents = new ArrayList<>();
+        Query userIdQuery = new QueryParser("user_id",analyzer).parse(userId);
+        BooleanQuery.Builder builder = new BooleanQuery.Builder();
+        String[] fields = {"title", "url", "body"};
+        BooleanClause.Occur[] flags = {BooleanClause.Occur.SHOULD, BooleanClause.Occur.SHOULD, BooleanClause.Occur.SHOULD};
+        Query query = MultiFieldQueryParser.parse(searchPhrase, fields, flags, analyzer);
+        builder.add(userIdQuery, BooleanClause.Occur.FILTER);
+        builder.add(query, BooleanClause.Occur.MUST);
+        BooleanQuery fullQuery = builder.build();
+        TopDocs topDocs = searcher.search(fullQuery,200);
+        List<ResultDocument> result = new ArrayList<>();
         for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
-            documents.add(searcher.doc(scoreDoc.doc));
+            Document document = searcher.doc(scoreDoc.doc);
+            result.add(new ResultDocument(document.get("title"),document.get("url"),document.get("created_date"),
+                    document.get("user_id")));
         }
-        System.out.println("found documents:" + documents.size());
+        System.out.println("found documents:" + result.size());
+        return result;
     }
 }
