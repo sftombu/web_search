@@ -61,7 +61,7 @@ public class DocumentIndex {
         builder.add(userIdQuery, BooleanClause.Occur.FILTER);
         builder.add(query, BooleanClause.Occur.MUST);
         BooleanQuery fullQuery = builder.build();
-        TopDocs topDocs = searcher.search(fullQuery,200);
+        TopDocs topDocs = searcher.search(fullQuery,20);
         List<ResultDocument> result = new ArrayList<>();
         for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
             Document document = searcher.doc(scoreDoc.doc);
