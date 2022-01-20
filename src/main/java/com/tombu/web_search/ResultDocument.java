@@ -3,8 +3,6 @@ package com.tombu.web_search;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type_name")
-@JsonTypeName("result_document")
 public class ResultDocument {
     String title;
     String URL;
