@@ -13,6 +13,8 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.ComponentScan;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -25,13 +27,14 @@ public class DocumentIndex {
     IndexWriterConfig indexWriterConfig;
     IndexWriter writer;
 
-
     public DocumentIndex(String name) {
         this.name = name;
     }
 
     public void init() throws Exception {
-        index = FSDirectory.open(Paths.get("/Users/tombu/lucene/test_index"));
+        String indexPath = System.getProperty("lucene_path");
+        indexPath = (indexPath == null) ? "/luceneindex" : indexPath;
+        index = FSDirectory.open(Paths.get(indexPath));
         analyzer = new StandardAnalyzer();
         indexWriterConfig = new IndexWriterConfig(analyzer);
         writer = new IndexWriter(index, indexWriterConfig);

@@ -1,5 +1,6 @@
 package com.tombu.web_search;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,32 @@ import java.util.List;
 @RestController()
 public class WebSearchApi {
     private static IndexService indexService = null;
+
+    @Value("string value")
+    public static String IndexPath = null;
+
+
+    @CrossOrigin
+    @GetMapping("/hello")
+    public String hello() {
+        return "World 2";
+    }
+
+    @CrossOrigin
+    @GetMapping("/test_index")
+    public String testIndex() throws Exception {
+        IndexService.FindIndex("default").indexDocument("1", "tombu", "0",
+                "test title", "https://cloud.google.com/compute/docs/containers/configuring-options-to-run-containers",
+                "test what happens washington indiana");
+        return "ok";
+    }
+
+    @CrossOrigin
+    @GetMapping("/test_search")
+    public List<ResultDocument>  testSearch() throws Exception {
+        List<ResultDocument> result = IndexService.FindIndex("default").search("tombu", "washington");
+        return result;
+    }
 
     @CrossOrigin
     @PostMapping("/index_document")
