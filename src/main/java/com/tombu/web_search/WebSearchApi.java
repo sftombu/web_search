@@ -59,6 +59,13 @@ public class WebSearchApi {
         return result;
     }
 
+    @CrossOrigin
+    @GetMapping("/delete_index")
+    public void deleteIndex(@RequestParam(name = "index_name") String indexName) throws Exception {
+        IndexService.FindIndex(indexName).delete();
+    }
+
+
     public static void InitApi() throws Exception {
         indexService = new IndexService();
         indexService.init();

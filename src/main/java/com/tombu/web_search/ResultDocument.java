@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 public class ResultDocument {
+    String id;
     String title;
     String URL;
     String createdDate;
@@ -13,11 +14,20 @@ public class ResultDocument {
 
     }
 
-    public ResultDocument(String title, String URL, String createdDate, String userId) {
+    public ResultDocument(String id, String title, String URL, String createdDate, String userId) {
+        this.id = id;
         this.title = title;
         this.URL = URL;
         this.createdDate = createdDate;
         this.userId = userId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {
