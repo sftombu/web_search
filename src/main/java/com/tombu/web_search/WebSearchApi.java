@@ -18,7 +18,7 @@ public class WebSearchApi {
     @CrossOrigin
     @GetMapping("/hello")
     public String hello() {
-        return "World 2";
+        return "World 4";
     }
 
     @CrossOrigin
@@ -61,8 +61,8 @@ public class WebSearchApi {
 
     @CrossOrigin
     @GetMapping("/delete_index")
-    public void deleteIndex(@RequestParam(name = "index_name") String indexName) throws Exception {
-        IndexService.FindIndex(indexName).delete();
+    public void deleteIndex() throws Exception {
+        IndexService.FindIndex("default").delete();
     }
 
 
