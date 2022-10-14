@@ -23,6 +23,7 @@ public class DocumentIndex {
     private static final String INDEX_PATH_PROPERTY = "lucene_path";
 
     private String name;
+    private String indexPath;
     Directory index;
     StandardAnalyzer analyzer;
     IndexWriterConfig indexWriterConfig;
@@ -33,13 +34,17 @@ public class DocumentIndex {
     }
 
     public void init() throws Exception {
-        String indexPath = System.getProperty(INDEX_PATH_PROPERTY);
+        indexPath = System.getProperty(INDEX_PATH_PROPERTY);
         indexPath = (indexPath ==  null) ? System.getenv(INDEX_PATH_PROPERTY) : indexPath;
         indexPath = (indexPath == null) ? "/luceneindex" : indexPath;
         index = FSDirectory.open(Paths.get(indexPath));
         analyzer = new StandardAnalyzer();
         indexWriterConfig = new IndexWriterConfig(analyzer);
         writer = new IndexWriter(index, indexWriterConfig);
+    }
+
+    public String getIndexPath() {
+        return indexPath;
     }
 
     public void delete() throws Exception {

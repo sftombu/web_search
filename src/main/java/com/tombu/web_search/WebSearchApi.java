@@ -39,7 +39,7 @@ public class WebSearchApi {
     @CrossOrigin
     @GetMapping("/get_index_path")
     public String getIndexPath() throws Exception {
-        return IndexPath;
+        return IndexService.FindIndex("default").getIndexPath();
     }
 
     @CrossOrigin
