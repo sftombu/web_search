@@ -22,6 +22,12 @@ public class WebSearchApi {
     }
 
     @CrossOrigin
+    @GetMapping("/hcheck")
+    public String hcheck() {
+        return "World 5";
+    }
+
+    @CrossOrigin
     @GetMapping("/test_index")
     public String testIndex() throws Exception {
         IndexService.FindIndex("default").indexDocument("1", "tombu", "0",
