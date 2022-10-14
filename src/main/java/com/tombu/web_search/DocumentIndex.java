@@ -18,7 +18,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class DocumentIndex {
+    private static final String INDEX_PATH_PROPERTY = "lucene_path";
+
     private String name;
     Directory index;
     StandardAnalyzer analyzer;
@@ -30,7 +33,8 @@ public class DocumentIndex {
     }
 
     public void init() throws Exception {
-        String indexPath = System.getProperty("lucene_path");
+        String indexPath = System.getProperty(INDEX_PATH_PROPERTY);
+        indexPath = (indexPath ==  null) ? System.getenv(INDEX_PATH_PROPERTY) : indexPath;
         indexPath = (indexPath == null) ? "/luceneindex" : indexPath;
         index = FSDirectory.open(Paths.get(indexPath));
         analyzer = new StandardAnalyzer();

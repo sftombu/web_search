@@ -18,13 +18,13 @@ public class WebSearchApi {
     @CrossOrigin
     @GetMapping("/hello")
     public String hello() {
-        return "World 4";
+        return "World 6";
     }
 
     @CrossOrigin
     @GetMapping("/hcheck")
     public String hcheck() {
-        return "World 5";
+        return "World 6";
     }
 
     @CrossOrigin
@@ -34,6 +34,12 @@ public class WebSearchApi {
                 "test title", "https://cloud.google.com/compute/docs/containers/configuring-options-to-run-containers",
                 "test what happens washington indiana");
         return "ok";
+    }
+
+    @CrossOrigin
+    @GetMapping("/get_index_path")
+    public String getIndexPath() throws Exception {
+        return IndexPath;
     }
 
     @CrossOrigin
